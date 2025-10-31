@@ -17,11 +17,17 @@ router.post('/register', async (req, res) => {
 			restaurantName,
 		});
 		const token = jwt.sign({ id: shopkeeper._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+		// res.cookie('token', token, {
+		// 	httpOnly: true,
+		// 	secure: false,
+		// 	sameSite: 'lax',
+		// 	maxAge: 24 * 60 * 60 * 1000,
+		// });
 		res.cookie('token', token, {
 			httpOnly: true,
-			secure: false,
-			sameSite: 'lax',
-			maxAge: 24 * 60 * 60 * 1000,
+			secure: true, // must be true in production (Render uses HTTPS)
+			sameSite: 'none', // allow cross-site cookies
+			maxAge: 24 * 60 * 60 * 1000, // 1 day
 		});
 
 		res.status(201).json({
@@ -76,12 +82,17 @@ router.post('/login', async (req, res) => {
 	}
 });
 router.post('/logout', (req, res) => {
-	res.clearCookie('token', {
+	// res.clearCookie('token', {
+	// 	httpOnly: true,
+	// 	secure: process.env.NODE_ENV === 'production',
+	// 	sameSite: 'lax',
+	// });
+	res.cookie('token', token, {
 		httpOnly: true,
-		secure: process.env.NODE_ENV === 'production',
-		sameSite: 'lax',
+		secure: true, // must be true in production (Render uses HTTPS)
+		sameSite: 'none', // allow cross-site cookies
+		maxAge: 24 * 60 * 60 * 1000, // 1 day
 	});
-
 	res.status(200).json({ message: 'Logged out successfully' });
 });
 
