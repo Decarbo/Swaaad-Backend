@@ -82,18 +82,12 @@ router.post('/login', async (req, res) => {
 	}
 });
 router.post('/logout', (req, res) => {
-	// res.clearCookie('token', {
-	// 	httpOnly: true,
-	// 	secure: process.env.NODE_ENV === 'production',
-	// 	sameSite: 'lax',
-	// });
-	res.cookie('token', token, {
-		httpOnly: true,
-		secure: true, // must be true in production (Render uses HTTPS)
-		sameSite: 'none', // allow cross-site cookies
-		maxAge: 24 * 60 * 60 * 1000, // 1 day
-	});
-	res.status(200).json({ message: 'Logged out successfully' });
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: true,         // true for HTTPS (Render uses HTTPS)
+    sameSite: 'none',     // match sameSite config used in login
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 export default router;
